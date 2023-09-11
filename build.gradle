@@ -1,19 +1,20 @@
 plugins {
     id 'java-library'
     id "idea"
-    id "com.adarshr.test-logger" version "3.2.0"
+    id "com.adarshr.test-logger" version "4.0.0"
     id "com.github.johnrengelman.shadow" version "8.1.1"
     id 'ru.vyarus.java-lib' version '2.4.0'
     id 'ru.vyarus.github-info' version '1.5.0'
     id 'signing'
     id "io.github.gradle-nexus.publish-plugin" version "1.3.0"
-    id "com.github.ben-manes.versions" version "0.47.0"
+    id "com.github.ben-manes.versions" version "0.51.0"
     id 'net.researchgate.release' version '3.0.2'
 }
 
 def isBuildSnapshot = version.toString().endsWith("-SNAPSHOT")
 
 repositories {
+    mavenLocal()
     mavenCentral()
     if (isBuildSnapshot) {
         maven { url "https://s01.oss.sonatype.org/content/repositories/snapshots/" }
@@ -24,17 +25,11 @@ sourceCompatibility = 17
 targetCompatibility = 17
 
 group "io.kestra.plugin"
-description 'Plugin template for Kestra'
+description 'Plugin Chti JUG'
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
     options.compilerArgs.add("-parameters")
-}
-
-configurations.all {
-    resolutionStrategy {
-        force("org.slf4j:slf4j-api:1.7.36")
-    }
 }
 
 dependencies {
@@ -43,12 +38,14 @@ dependencies {
     compileOnly "org.projectlombok:lombok:$lombokVersion"
 
     // micronaut
-    annotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    annotationProcessor platform("io.micronaut.platform:micronaut-platform:$micronautVersion")
     annotationProcessor "io.micronaut:micronaut-inject-java"
-    annotationProcessor "io.micronaut:micronaut-validation"
-    compileOnly platform("io.micronaut:micronaut-bom:$micronautVersion")
+    annotationProcessor "io.micronaut.validation:micronaut-validation-processor"
+    compileOnly "io.micronaut:micronaut-jackson-databind"
+
+    compileOnly platform("io.micronaut.platform:micronaut-platform:$micronautVersion")
     compileOnly "io.micronaut:micronaut-inject"
-    compileOnly "io.micronaut:micronaut-validation"
+    compileOnly "io.micronaut.validation:micronaut-validation"
 
     // kestra
     compileOnly group: "io.kestra", name: "core", version: kestraVersion
@@ -75,9 +72,16 @@ testlogger {
 }
 
 dependencies {
-    testAnnotationProcessor platform("io.micronaut:micronaut-bom:$micronautVersion")
+    // lombok
+    testAnnotationProcessor "org.projectlombok:lombok:" + lombokVersion
+    testCompileOnly 'org.projectlombok:lombok:' + lombokVersion
+
+    // micronaut
+    testAnnotationProcessor platform("io.micronaut.platform:micronaut-platform:$micronautVersion")
     testAnnotationProcessor "io.micronaut:micronaut-inject-java"
-    testImplementation platform("io.micronaut:micronaut-bom:$micronautVersion")
+    testAnnotationProcessor "io.micronaut.validation:micronaut-validation-processor"
+
+    testImplementation platform("io.micronaut.platform:micronaut-platform:$micronautVersion")
     testImplementation "io.micronaut.test:micronaut-test-junit5"
 
     // test deps needed only for to have a runner
@@ -110,8 +114,8 @@ jar {
     manifest {
         attributes(
                 "X-Kestra-Name": project.name,
-                "X-Kestra-Title": "Template",
-                "X-Kestra-Group": project.group + ".templates",
+                "X-Kestra-Title": "ChtiJUG",
+                "X-Kestra-Group": project.group + ".chtijub",
                 "X-Kestra-Description": project.description,
                 "X-Kestra-Version": project.version
         )
