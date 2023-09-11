@@ -1,4 +1,4 @@
-package io.kestra.plugin.templates;
+package io.kestra.plugin.chtijug;
 
 import com.google.common.collect.ImmutableMap;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
@@ -25,11 +25,11 @@ class ExampleTest {
     void run() throws Exception {
         RunContext runContext = runContextFactory.of(ImmutableMap.of("variable", "John Doe"));
 
-        Example task = Example.builder()
+        HttpGet task = HttpGet.builder()
             .format("Hello {{ variable }}")
             .build();
 
-        Example.Output runOutput = task.run(runContext);
+        HttpGet.Output runOutput = task.run(runContext);
 
         assertThat(runOutput.getChild().getValue(), is(StringUtils.reverse("Hello John Doe")));
     }

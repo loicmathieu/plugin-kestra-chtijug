@@ -1,5 +1,6 @@
-package io.kestra.plugin.templates;
+package io.kestra.plugin.chtijug;
 
+import io.kestra.core.models.annotations.Example;
 import io.kestra.core.models.annotations.Plugin;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
@@ -17,18 +18,20 @@ import org.slf4j.Logger;
 @Getter
 @NoArgsConstructor
 @Schema(
-    title = "Short description for this task",
-    description = "Full description of this task"
+    title = "Plugin example"
 )
 @Plugin(
     examples = {
-        @io.kestra.core.models.annotations.Example(
-            title = "Simple revert",
-            code = { "format: \"Text to be reverted\"" }
+        @Example(
+            title = "Plugin example",
+            code = {
+                """
+                    TODO"""
+            }
         )
     }
 )
-public class Example extends Task implements RunnableTask<Example.Output> {
+public class HttpGet extends Task implements RunnableTask<HttpGet.Output> {
     @Schema(
         title = "Short description for this input",
         description = "Full description of this input"
@@ -37,7 +40,7 @@ public class Example extends Task implements RunnableTask<Example.Output> {
     private String format;
 
     @Override
-    public Example.Output run(RunContext runContext) throws Exception {
+    public HttpGet.Output run(RunContext runContext) throws Exception {
         Logger logger = runContext.logger();
 
         String render = runContext.render(format);
